@@ -1,0 +1,750 @@
+
+
+local ScreenGui = Instance.new("ScreenGui")
+local Main = Instance.new("Frame")
+local Frame = Instance.new("Frame")
+local TextLabel = Instance.new("TextLabel")
+local Box = Instance.new("TextButton")
+local Frame_2 = Instance.new("Frame")
+local Tracers = Instance.new("TextButton")
+local Frame_3 = Instance.new("Frame")
+local Frame_4 = Instance.new("Frame")
+local TextLabel_2 = Instance.new("TextLabel")
+local Frame_5 = Instance.new("Frame")
+local Aimbot = Instance.new("TextButton")
+local CircleFOV = Instance.new("TextButton")
+local Frame_6 = Instance.new("Frame")
+local Frame_7 = Instance.new("Frame")
+local TextLabel_3 = Instance.new("TextLabel")
+local TextLabel_4 = Instance.new("TextLabel")
+local Fly = Instance.new("TextButton")
+local Frame_8 = Instance.new("Frame")
+local ChatSpam = Instance.new("TextButton")
+local Frame_9 = Instance.new("Frame")
+local TextLabel_5 = Instance.new("TextLabel")
+
+--Properties:
+
+ScreenGui.Parent = game.CoreGui
+
+Main.Name = "Main"
+Main.Parent = ScreenGui
+Main.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+Main.BorderColor3 = Color3.fromRGB(30, 30, 30)
+Main.Position = UDim2.new(0.100484259, 0, 0.17546013, 0)
+Main.Size = UDim2.new(0, 487, 0, 571)
+Main.Active = true
+Main.Draggable = true
+
+Frame.Parent = Main
+Frame.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
+Frame.BorderColor3 = Color3.fromRGB(45, 45, 45)
+Frame.Position = UDim2.new(0.0677618086, 0, 0.143607706, 0)
+Frame.Size = UDim2.new(0, 267, 0, 103)
+
+TextLabel.Parent = Main
+TextLabel.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
+TextLabel.BorderColor3 = Color3.fromRGB(45, 45, 45)
+TextLabel.Position = UDim2.new(0.141683772, 0, 0.150612965, 0)
+TextLabel.Size = UDim2.new(0, 200, 0, 15)
+TextLabel.Font = Enum.Font.Gotham
+TextLabel.Text = "Esp"
+TextLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+TextLabel.TextSize = 14.000
+
+Box.Name = "Box"
+Box.Parent = Main
+Box.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
+Box.BorderColor3 = Color3.fromRGB(25, 25, 25)
+Box.Position = UDim2.new(0.133470222, 0, 0.208406299, 0)
+Box.Size = UDim2.new(0, 41, 0, 10)
+Box.Font = Enum.Font.Gotham
+Box.Text = "Box"
+Box.TextColor3 = Color3.fromRGB(255, 255, 255)
+Box.TextSize = 14.000
+Box.MouseButton1Down:connect(function()
+	local lplr = game.Players.LocalPlayer
+	local camera = game:GetService("Workspace").CurrentCamera
+	local CurrentCamera = workspace.CurrentCamera
+	local worldToViewportPoint = CurrentCamera.worldToViewportPoint
+
+	local HeadOff = Vector3.new(0, 0.5, 0)
+	local LegOff = Vector3.new(0,3,0)
+
+	for i,v in pairs(game.Players:GetChildren()) do
+		local BoxOutline = Drawing.new("Square")
+		BoxOutline.Visible = false
+		BoxOutline.Color = Color3.new(0,0,0)
+		BoxOutline.Thickness = 3
+		BoxOutline.Transparency = 1
+		BoxOutline.Filled = false
+
+		local Box = Drawing.new("Square")
+		Box.Visible = false
+		Box.Color = Color3.new(1,1,1)
+		Box.Thickness = 1
+		Box.Transparency = 1
+		Box.Filled = false
+
+		local HealthBarOutline = Drawing.new("Square")
+		HealthBarOutline.Thickness = 3
+		HealthBarOutline.Filled = false
+		HealthBarOutline.Color = Color3.new(0,0,0)
+		HealthBarOutline.Transparency = 1
+		HealthBarOutline.Visible = false
+
+		local HealthBar = Drawing.new("Square")
+		HealthBar.Thickness = 1
+		HealthBar.Filled = false
+		HealthBar.Transparency = 1
+		HealthBar.Visible = false
+
+		function boxesp()
+			game:GetService("RunService").RenderStepped:Connect(function()
+				if v.Character ~= nil and v.Character:FindFirstChild("Humanoid") ~= nil and v.Character:FindFirstChild("HumanoidRootPart") ~= nil and v ~= lplr and v.Character.Humanoid.Health > 0 then
+					local Vector, onScreen = camera:worldToViewportPoint(v.Character.HumanoidRootPart.Position)
+
+					local RootPart = v.Character.HumanoidRootPart
+					local Head = v.Character.Head
+					local RootPosition, RootVis = worldToViewportPoint(CurrentCamera, RootPart.Position)
+					local HeadPosition = worldToViewportPoint(CurrentCamera, Head.Position + HeadOff)
+					local LegPosition = worldToViewportPoint(CurrentCamera, RootPart.Position - LegOff)
+
+					if onScreen then
+						BoxOutline.Size = Vector2.new(1000 / RootPosition.Z, HeadPosition.Y - LegPosition.Y)
+						BoxOutline.Position = Vector2.new(RootPosition.X - BoxOutline.Size.X / 2, RootPosition.Y - BoxOutline.Size.Y / 2)
+						BoxOutline.Visible = true
+
+						Box.Size = Vector2.new(1000 / RootPosition.Z, HeadPosition.Y - LegPosition.Y)
+						Box.Position = Vector2.new(RootPosition.X - Box.Size.X / 2, RootPosition.Y - Box.Size.Y / 2)
+						Box.Visible = true
+
+						HealthBarOutline.Size = Vector2.new(2, HeadPosition.Y - LegPosition.Y)
+						HealthBarOutline.Position = BoxOutline.Position - Vector2.new(6,0)
+						HealthBarOutline.Visible = true
+
+						HealthBar.Size = Vector2.new(2, (HeadPosition.Y - LegPosition.Y) / (game:GetService("Players")[v.Character.Name].NRPBS["MaxHealth"].Value / math.clamp(game:GetService("Players")[v.Character.Name].NRPBS["Health"].Value, 0, game:GetService("Players")[v.Character.Name].NRPBS:WaitForChild("MaxHealth").Value)))
+						HealthBar.Position = Vector2.new(Box.Position.X - 6, Box.Position.Y + (1 / HealthBar.Size.Y))
+						HealthBar.Color = Color3.fromRGB(255 - 255 / (game:GetService("Players")[v.Character.Name].NRPBS["MaxHealth"].Value / game:GetService("Players")[v.Character.Name].NRPBS["Health"].Value), 255 / (game:GetService("Players")[v.Character.Name].NRPBS["MaxHealth"].Value / game:GetService("Players")[v.Character.Name].NRPBS["Health"].Value), 0)
+						HealthBar.Visible = true
+
+						if v.TeamColor == lplr.TeamColor then
+							--- Our Team
+							BoxOutline.Visible = false
+							Box.Visible = false
+							HealthBarOutline.Visible = false
+							HealthBar.Visible = false
+						else
+							---Enemy Team
+							BoxOutline.Visible = true
+							Box.Visible = true
+							HealthBarOutline.Visible = true
+							HealthBar.Visible = true
+						end
+
+					else
+						BoxOutline.Visible = false
+						Box.Visible = false
+						HealthBarOutline.Visible = false
+						HealthBar.Visible = false
+					end
+				else
+					BoxOutline.Visible = false
+					Box.Visible = false
+					HealthBarOutline.Visible = false
+					HealthBar.Visible = false
+				end
+			end)
+		end
+		coroutine.wrap(boxesp)()
+	end
+
+	game.Players.PlayerAdded:Connect(function(v)
+		local BoxOutline = Drawing.new("Square")
+		BoxOutline.Visible = false
+		BoxOutline.Color = Color3.new(0,0,0)
+		BoxOutline.Thickness = 3
+		BoxOutline.Transparency = 1
+		BoxOutline.Filled = false
+
+		local Box = Drawing.new("Square")
+		Box.Visible = false
+		Box.Color = Color3.new(1,1,1)
+		Box.Thickness = 1
+		Box.Transparency = 1
+		Box.Filled = false
+
+		local HealthBarOutline = Drawing.new("Square")
+		HealthBarOutline.Thickness = 3
+		HealthBarOutline.Filled = false
+		HealthBarOutline.Color = Color3.new(0,0,0)
+		HealthBarOutline.Transparency = 1
+		HealthBarOutline.Visible = false
+
+		local HealthBar = Drawing.new("Square")
+		HealthBar.Thickness = 1
+		HealthBar.Filled = false
+		HealthBar.Transparency = 1
+		HealthBar.Visible = false
+
+		function boxesp()
+			game:GetService("RunService").RenderStepped:Connect(function()
+				if v.Character ~= nil and v.Character:FindFirstChild("Humanoid") ~= nil and v.Character:FindFirstChild("HumanoidRootPart") ~= nil and v ~= lplr and v.Character.Humanoid.Health > 0 then
+					local Vector, onScreen = camera:worldToViewportPoint(v.Character.HumanoidRootPart.Position)
+
+					local RootPart = v.Character.HumanoidRootPart
+					local Head = v.Character.Head
+					local RootPosition, RootVis = worldToViewportPoint(CurrentCamera, RootPart.Position)
+					local HeadPosition = worldToViewportPoint(CurrentCamera, Head.Position + HeadOff)
+					local LegPosition = worldToViewportPoint(CurrentCamera, RootPart.Position - LegOff)
+
+					if onScreen then
+						BoxOutline.Size = Vector2.new(1000 / RootPosition.Z, HeadPosition.Y - LegPosition.Y)
+						BoxOutline.Position = Vector2.new(RootPosition.X - BoxOutline.Size.X / 2, RootPosition.Y - BoxOutline.Size.Y / 2)
+						BoxOutline.Visible = true
+
+						Box.Size = Vector2.new(1000 / RootPosition.Z, HeadPosition.Y - LegPosition.Y)
+						Box.Position = Vector2.new(RootPosition.X - Box.Size.X / 2, RootPosition.Y - Box.Size.Y / 2)
+						Box.Visible = true
+
+						HealthBarOutline.Size = Vector2.new(2, HeadPosition.Y - LegPosition.Y)
+						HealthBarOutline.Position = BoxOutline.Position - Vector2.new(6,0)
+						HealthBarOutline.Visible = true
+
+						HealthBar.Size = Vector2.new(2, (HeadPosition.Y - LegPosition.Y) / (game:GetService("Players")[v.Character.Name].NRPBS["MaxHealth"].Value / math.clamp(game:GetService("Players")[v.Character.Name].NRPBS["Health"].Value, 0, game:GetService("Players")[v.Character.Name].NRPBS:WaitForChild("MaxHealth").Value)))
+						HealthBar.Position = Vector2.new(Box.Position.X - 6, Box.Position.Y + (1/HealthBar.Size.Y))
+						HealthBar.Color = Color3.fromRGB(255 - 255 / (game:GetService("Players")[v.Character.Name].NRPBS["MaxHealth"].Value / game:GetService("Players")[v.Character.Name].NRPBS["Health"].Value), 255 / (game:GetService("Players")[v.Character.Name].NRPBS["MaxHealth"].Value / game:GetService("Players")[v.Character.Name].NRPBS["Health"].Value), 0)                    
+						HealthBar.Visible = true
+
+						if v.TeamColor == lplr.TeamColor then
+							--- Our Team
+							BoxOutline.Visible = false
+							Box.Visible = false
+							HealthBarOutline.Visible = false
+							HealthBar.Visible = false
+						else
+							---Enemy Team
+							BoxOutline.Visible = true
+							Box.Visible = true
+							HealthBarOutline.Visible = true
+							HealthBar.Visible = true
+						end
+
+					else
+						BoxOutline.Visible = false
+						Box.Visible = false
+						HealthBarOutline.Visible = false
+						HealthBar.Visible = false
+					end
+				else
+					BoxOutline.Visible = false
+					Box.Visible = false
+					HealthBarOutline.Visible = false
+					HealthBar.Visible = false
+				end
+			end)
+		end
+		coroutine.wrap(boxesp)()
+	end)
+end)
+
+Frame_2.Parent = Main
+Frame_2.BackgroundColor3 = Color3.fromRGB(0, 85, 0)
+Frame_2.Position = UDim2.new(0.0944558531, 0, 0.206654996, 0)
+Frame_2.Size = UDim2.new(0, 12, 0, 12)
+Frame_2.Style = Enum.FrameStyle.ChatGreen
+
+Tracers.Name = "Tracers"
+Tracers.Parent = Main
+Tracers.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
+Tracers.BorderColor3 = Color3.fromRGB(25, 25, 25)
+Tracers.Position = UDim2.new(0.135523617, 0, 0.273204893, 0)
+Tracers.Size = UDim2.new(0, 41, 0, 10)
+Tracers.Font = Enum.Font.Gotham
+Tracers.Text = "Tracers"
+Tracers.TextColor3 = Color3.fromRGB(255, 255, 255)
+Tracers.TextSize = 14.000
+Tracers.MouseButton1Down:connect(function()
+	loadstring(game:HttpGet("https://pastebin.com/raw/didXQtDc"))()
+end)
+
+Frame_3.Parent = Main
+Frame_3.BackgroundColor3 = Color3.fromRGB(0, 85, 0)
+Frame_3.Position = UDim2.new(0.0924024656, 0, 0.271453589, 0)
+Frame_3.Size = UDim2.new(0, 12, 0, 12)
+Frame_3.Style = Enum.FrameStyle.ChatGreen
+
+Frame_4.Parent = Main
+Frame_4.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
+Frame_4.BorderColor3 = Color3.fromRGB(45, 45, 45)
+Frame_4.Position = UDim2.new(0.416837782, 0, 0.44658494, 0)
+Frame_4.Size = UDim2.new(0, 267, 0, 103)
+
+TextLabel_2.Parent = Main
+TextLabel_2.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
+TextLabel_2.BorderColor3 = Color3.fromRGB(45, 45, 45)
+TextLabel_2.Position = UDim2.new(0.49075976, 0, 0.462346762, 0)
+TextLabel_2.Size = UDim2.new(0, 200, 0, 15)
+TextLabel_2.Font = Enum.Font.Gotham
+TextLabel_2.Text = "Aimbot"
+TextLabel_2.TextColor3 = Color3.fromRGB(255, 255, 255)
+TextLabel_2.TextSize = 14.000
+
+Frame_5.Parent = Main
+Frame_5.BackgroundColor3 = Color3.fromRGB(0, 85, 0)
+Frame_5.Position = UDim2.new(0.439425051, 0, 0.523642719, 0)
+Frame_5.Size = UDim2.new(0, 12, 0, 12)
+Frame_5.Style = Enum.FrameStyle.ChatGreen
+
+Aimbot.Name = "Aimbot"
+Aimbot.Parent = Main
+Aimbot.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
+Aimbot.BorderColor3 = Color3.fromRGB(25, 25, 25)
+Aimbot.Position = UDim2.new(0.49691993, 0, 0.525394022, 0)
+Aimbot.Size = UDim2.new(0, 41, 0, 10)
+Aimbot.Font = Enum.Font.Gotham
+Aimbot.Text = "Aimbot"
+Aimbot.TextColor3 = Color3.fromRGB(255, 255, 255)
+Aimbot.TextSize = 14.000
+Aimbot.MouseButton1Down:connect(function()
+	PLAYER  = game.Players.LocalPlayer
+	MOUSE   = PLAYER:GetMouse()
+	CC      = game.Workspace.CurrentCamera
+
+	ENABLED      = false
+	ESP_ENABLED  = false
+
+	_G.FREE_FOR_ALL = true
+
+	_G.ESP_BIND    = 52
+	_G.CHANGE_AIM  = 'q'
+
+	_G.AIM_AT = 'Head'
+
+	wait(1)
+
+	function GetNearestPlayerToMouse()
+		local PLAYERS      = {}
+		local PLAYER_HOLD  = {}
+		local DISTANCES    = {}
+		for i, v in pairs(game.Players:GetPlayers()) do
+			if v ~= PLAYER then
+				table.insert(PLAYERS, v)
+			end
+		end
+		for i, v in pairs(PLAYERS) do
+			if _G.FREE_FOR_ALL == false then
+				if v and (v.Character) ~= nil and v.TeamColor ~= PLAYER.TeamColor then
+					local AIM = v.Character:FindFirstChild(_G.AIM_AT)
+					if AIM ~= nil then
+						local DISTANCE                 = (AIM.Position - game.Workspace.CurrentCamera.CoordinateFrame.p).magnitude
+						local RAY                      = Ray.new(game.Workspace.CurrentCamera.CoordinateFrame.p, (MOUSE.Hit.p - CC.CoordinateFrame.p).unit * DISTANCE)
+						local HIT,POS                  = game.Workspace:FindPartOnRay(RAY, game.Workspace)
+						local DIFF                     = math.floor((POS - AIM.Position).magnitude)
+						PLAYER_HOLD[v.Name .. i]       = {}
+						PLAYER_HOLD[v.Name .. i].dist  = DISTANCE
+						PLAYER_HOLD[v.Name .. i].plr   = v
+						PLAYER_HOLD[v.Name .. i].diff  = DIFF
+						table.insert(DISTANCES, DIFF)
+					end
+				end
+			elseif _G.FREE_FOR_ALL == true then
+				local AIM = v.Character:FindFirstChild(_G.AIM_AT)
+				if AIM ~= nil then
+					local DISTANCE                 = (AIM.Position - game.Workspace.CurrentCamera.CoordinateFrame.p).magnitude
+					local RAY                      = Ray.new(game.Workspace.CurrentCamera.CoordinateFrame.p, (MOUSE.Hit.p - CC.CoordinateFrame.p).unit * DISTANCE)
+					local HIT,POS                  = game.Workspace:FindPartOnRay(RAY, game.Workspace)
+					local DIFF                     = math.floor((POS - AIM.Position).magnitude)
+					PLAYER_HOLD[v.Name .. i]       = {}
+					PLAYER_HOLD[v.Name .. i].dist  = DISTANCE
+					PLAYER_HOLD[v.Name .. i].plr   = v
+					PLAYER_HOLD[v.Name .. i].diff  = DIFF
+					table.insert(DISTANCES, DIFF)
+				end
+			end
+		end
+
+		if unpack(DISTANCES) == nil then
+			return false
+		end
+
+		local L_DISTANCE = math.floor(math.min(unpack(DISTANCES)))
+		if L_DISTANCE > 20 then
+			return false
+		end
+
+		for i, v in pairs(PLAYER_HOLD) do
+			if v.diff == L_DISTANCE then
+				return v.plr
+			end
+		end
+		return false
+	end
+
+	GUI_MAIN                           = Instance.new('ScreenGui', game.CoreGui)
+	GUI_TARGET                         = Instance.new('TextLabel', GUI_MAIN)
+	GUI_AIM_AT                         = Instance.new('TextLabel', GUI_MAIN)
+
+	GUI_MAIN.Name                      = 'AIMBOT'
+
+	GUI_TARGET.Size                    = UDim2.new(0,200,0,30)
+	GUI_TARGET.BackgroundTransparency  = 0.5
+	GUI_TARGET.BackgroundColor         = BrickColor.new('Fossil')
+	GUI_TARGET.BorderSizePixel         = 0
+	GUI_TARGET.Position                = UDim2.new(0.5,-100,0,0)
+	GUI_TARGET.Text                    = 'AIMBOT : OFF'
+	GUI_TARGET.TextColor3              = Color3.new(1,1,1)
+	GUI_TARGET.TextStrokeTransparency  = 1
+	GUI_TARGET.TextWrapped             = true
+	GUI_TARGET.FontSize                = 'Size24'
+	GUI_TARGET.Font                    = 'SourceSansBold'
+
+	GUI_AIM_AT.Size                    = UDim2.new(0,200,0,20)
+	GUI_AIM_AT.BackgroundTransparency  = 0.5
+	GUI_AIM_AT.BackgroundColor         = BrickColor.new('Fossil')
+	GUI_AIM_AT.BorderSizePixel         = 0
+	GUI_AIM_AT.Position                = UDim2.new(0.5,-100,0,30)
+	GUI_AIM_AT.Text                    = 'AIMING : HEAD'
+	GUI_AIM_AT.TextColor3              = Color3.new(1,1,1)
+	GUI_AIM_AT.TextStrokeTransparency  = 1
+	GUI_AIM_AT.TextWrapped             = true
+	GUI_AIM_AT.FontSize                = 'Size18'
+	GUI_AIM_AT.Font                    = 'SourceSansBold'
+
+	local TRACK = false
+
+	function CREATE(BASE, TEAM)
+		local ESP_MAIN                   = Instance.new('BillboardGui', PLAYER.PlayerGui)
+		local ESP_DOT                    = Instance.new('Frame', ESP_MAIN)
+		local ESP_NAME                   = Instance.new('TextLabel', ESP_MAIN)
+
+		ESP_MAIN.Name                    = 'ESP'
+		ESP_MAIN.Adornee                 = BASE
+		ESP_MAIN.AlwaysOnTop             = true
+		ESP_MAIN.ExtentsOffset           = Vector3.new(0, 1, 0)
+		ESP_MAIN.Size                    = UDim2.new(0, 5, 0, 5)
+
+		ESP_DOT.Name                     = 'DOT'
+		ESP_DOT.BackgroundColor          = BrickColor.new('Bright red')
+		ESP_DOT.BackgroundTransparency   = 0.3
+		ESP_DOT.BorderSizePixel          = 0
+		ESP_DOT.Position                 = UDim2.new(-0.5, 0, -0.5, 0)
+		ESP_DOT.Size                     = UDim2.new(2, 0, 2, 0)
+		ESP_DOT.Visible                  = true
+		ESP_DOT.ZIndex                   = 10
+
+		ESP_NAME.Name                    = 'NAME'
+		ESP_NAME.BackgroundColor3        = Color3.new(255, 255, 255)
+		ESP_NAME.BackgroundTransparency  = 1
+		ESP_NAME.BorderSizePixel         = 0
+		ESP_NAME.Position                = UDim2.new(0, 0, 0, -40)
+		ESP_NAME.Size                    = UDim2.new(1, 0, 10, 0)
+		ESP_NAME.Visible                 = true
+		ESP_NAME.ZIndex                  = 10
+		ESP_NAME.Font                    = 'ArialBold'
+		ESP_NAME.FontSize                = 'Size14'
+		ESP_NAME.Text                    = BASE.Parent.Name:upper()
+		ESP_NAME.TextColor               = BrickColor.new('Bright red')
+	end
+
+	function CLEAR()
+		for _,v in pairs(PLAYER.PlayerGui:children()) do
+			if v.Name == 'ESP' and v:IsA('BillboardGui') then
+				v:Destroy()
+			end
+		end
+	end
+
+	function FIND()
+		CLEAR()
+		TRACK = true
+		spawn(function()
+			while wait() do
+				if TRACK then
+					CLEAR()
+					for i,v in pairs(game.Players:GetChildren()) do
+						if v.Character and v.Character:FindFirstChild('Head') then
+							if _G.FREE_FOR_ALL == false then
+								if v.TeamColor ~= PLAYER.TeamColor then
+									if v.Character:FindFirstChild('Head') then
+										CREATE(v.Character.Head, true)
+									end
+								end
+							else
+								if v.Character:FindFirstChild('Head') then
+									CREATE(v.Character.Head, true)
+								end
+							end
+						end
+					end
+				end
+			end
+			wait(1)
+		end)
+	end
+
+	MOUSE.Button2Down:connect(function()
+		ENABLED = true
+	end)
+
+	MOUSE.Button2Up:connect(function()
+		ENABLED = false
+	end)
+
+	MOUSE.KeyDown:connect(function(KEY)
+		KEY = KEY:lower():byte()
+		if KEY == _G.ESP_BIND then
+			if ESP_ENABLED == false then
+				FIND()
+				ESP_ENABLED = true
+				print('ESP : ON')
+			elseif ESP_ENABLED == true then
+				wait()
+				CLEAR()
+				TRACK = false
+				ESP_ENABLED = false
+				print('ESP : OFF')
+			end
+		end
+	end)
+
+	MOUSE.KeyDown:connect(function(KEY)
+		if KEY == _G.CHANGE_AIM then
+			if _G.AIM_AT == 'Head' then
+				_G.AIM_AT = 'Torso'
+				GUI_AIM_AT.Text = 'AIMING : TORSO'
+			elseif _G.AIM_AT == 'Torso' then
+				_G.AIM_AT = 'Head'
+				GUI_AIM_AT.Text = 'AIMING : HEAD'
+			end
+		end
+	end)
+
+	game:GetService('RunService').RenderStepped:connect(function()
+		if ENABLED then
+			local TARGET = GetNearestPlayerToMouse()
+			if (TARGET ~= false) then
+				local AIM = TARGET.Character:FindFirstChild(_G.AIM_AT)
+				if AIM then
+					CC.CoordinateFrame = CFrame.new(CC.CoordinateFrame.p, AIM.CFrame.p)
+				end
+				GUI_TARGET.Text = 'AIMBOT : '.. TARGET.Name:sub(1, 5)
+			else
+				GUI_TARGET.Text = 'AIMBOT : OFF'
+			end
+		end
+	end)
+
+	repeat
+		wait()
+		if ESP_ENABLED == true then
+			FIND()
+		end
+	until ESP_ENABLED == false
+end)
+
+CircleFOV.Name = "Circle FOV"
+CircleFOV.Parent = Main
+CircleFOV.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
+CircleFOV.BorderColor3 = Color3.fromRGB(25, 25, 25)
+CircleFOV.Position = UDim2.new(0.50924027, 0, 0.579684734, 0)
+CircleFOV.Size = UDim2.new(0, 41, 0, 10)
+CircleFOV.Font = Enum.Font.Gotham
+CircleFOV.Text = "Circle FOV"
+CircleFOV.TextColor3 = Color3.fromRGB(255, 255, 255)
+CircleFOV.TextSize = 14.000
+CircleFOV.MouseButton1Down:connect(function()
+	local Players = game:GetService("Players")
+	local LocalPlayer = Players.LocalPlayer
+	local mouse = LocalPlayer:GetMouse()
+	local Camera = workspace.CurrentCamera
+	local Debris = game:GetService("Debris")
+	local UserInputService = game:GetService("UserInputService")
+	local target = false
+	local RunService = game:GetService("RunService")
+
+
+	getfenv().lock = "Random" -- Head or Hitbox or Random
+
+	fov = 210;
+	local fovCircle = true;
+	local st = tonumber(tick());
+	warn("Loading script...")
+
+	if fovCircle then
+		function createcircle()
+			local a=Drawing.new('Circle');a.Transparency=1;a.Thickness=1.5;a.Visible=true;a.Color=Color3.fromRGB(0,255,149);a.Filled=false;a.Radius=fov;
+			return a;
+		end;  
+		local fovc = createcircle();
+		spawn(function()
+			RunService:BindToRenderStep("FovCircle",1,function()
+				fovc.Position = Vector2.new(mouse.X,mouse.Y)
+			end);
+		end);
+	end;
+end)
+
+Frame_6.Parent = Main
+Frame_6.BackgroundColor3 = Color3.fromRGB(0, 85, 0)
+Frame_6.Position = UDim2.new(0.437371671, 0, 0.574430823, 0)
+Frame_6.Size = UDim2.new(0, 12, 0, 12)
+Frame_6.Style = Enum.FrameStyle.ChatGreen
+
+Frame_7.Parent = Main
+Frame_7.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
+Frame_7.BorderColor3 = Color3.fromRGB(45, 45, 45)
+Frame_7.Position = UDim2.new(0.0431211516, 0, 0.747810841, 0)
+Frame_7.Size = UDim2.new(0, 267, 0, 103)
+
+TextLabel_3.Parent = Main
+TextLabel_3.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
+TextLabel_3.BorderColor3 = Color3.fromRGB(45, 45, 45)
+TextLabel_3.Position = UDim2.new(0.117043123, 0, 0.761821389, 0)
+TextLabel_3.Size = UDim2.new(0, 200, 0, 15)
+TextLabel_3.Font = Enum.Font.Gotham
+TextLabel_3.Text = "Misc"
+TextLabel_3.TextColor3 = Color3.fromRGB(255, 255, 255)
+TextLabel_3.TextSize = 14.000
+
+TextLabel_4.Parent = Main
+TextLabel_4.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
+TextLabel_4.BorderColor3 = Color3.fromRGB(45, 45, 45)
+TextLabel_4.Position = UDim2.new(0.0924024656, 0, 0.0472854637, 0)
+TextLabel_4.Size = UDim2.new(0, 404, 0, 15)
+TextLabel_4.Font = Enum.Font.Gotham
+TextLabel_4.Text = "JoeHub"
+TextLabel_4.TextColor3 = Color3.fromRGB(255, 255, 255)
+TextLabel_4.TextSize = 14.000
+
+Fly.Name = "Fly"
+Fly.Parent = Main
+Fly.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
+Fly.BorderColor3 = Color3.fromRGB(25, 25, 25)
+Fly.Position = UDim2.new(0.123203285, 0, 0.816112101, 0)
+Fly.Size = UDim2.new(0, 29, 0, 16)
+Fly.Font = Enum.Font.Gotham
+Fly.Text = "Fly"
+Fly.TextColor3 = Color3.fromRGB(255, 255, 255)
+Fly.TextSize = 14.000
+Fly.MouseButton1Down:connect(function()
+	repeat wait() 
+	until game.Players.LocalPlayer and game.Players.LocalPlayer.Character and game.Players.LocalPlayer.Character:findFirstChild("Head") and game.Players.LocalPlayer.Character:findFirstChild("Humanoid") 
+	local mouse = game.Players.LocalPlayer:GetMouse() 
+	repeat wait() until mouse
+	local plr = game.Players.LocalPlayer 
+	local torso = plr.Character.Head 
+	local flying = false
+	local deb = true 
+	local ctrl = {f = 0, b = 0, l = 0, r = 0} 
+	local lastctrl = {f = 0, b = 0, l = 0, r = 0} 
+	local maxspeed = 400 
+	local speed = 5000 
+
+	function Fly() 
+		local bg = Instance.new("BodyGyro", torso) 
+		bg.P = 9e4 
+		bg.maxTorque = Vector3.new(9e9, 9e9, 9e9) 
+		bg.cframe = torso.CFrame 
+		local bv = Instance.new("BodyVelocity", torso) 
+		bv.velocity = Vector3.new(0,0.1,0) 
+		bv.maxForce = Vector3.new(9e9, 9e9, 9e9) 
+		repeat wait() 
+			plr.Character.Humanoid.PlatformStand = true 
+			if ctrl.l + ctrl.r ~= 0 or ctrl.f + ctrl.b ~= 0 then 
+				speed = speed+.10+(speed/maxspeed) 
+				if speed > maxspeed then 
+					speed = maxspeed 
+				end 
+			elseif not (ctrl.l + ctrl.r ~= 0 or ctrl.f + ctrl.b ~= 0) and speed ~= 0 then 
+				speed = speed-1 
+				if speed < 0 then 
+					speed = 0 
+				end 
+			end 
+			if (ctrl.l + ctrl.r) ~= 0 or (ctrl.f + ctrl.b) ~= 0 then 
+				bv.velocity = ((game.Workspace.CurrentCamera.CoordinateFrame.lookVector * (ctrl.f+ctrl.b)) + ((game.Workspace.CurrentCamera.CoordinateFrame * CFrame.new(ctrl.l+ctrl.r,(ctrl.f+ctrl.b)*.2,0).p) - game.Workspace.CurrentCamera.CoordinateFrame.p))*speed 
+				lastctrl = {f = ctrl.f, b = ctrl.b, l = ctrl.l, r = ctrl.r} 
+			elseif (ctrl.l + ctrl.r) == 0 and (ctrl.f + ctrl.b) == 0 and speed ~= 0 then 
+				bv.velocity = ((game.Workspace.CurrentCamera.CoordinateFrame.lookVector * (lastctrl.f+lastctrl.b)) + ((game.Workspace.CurrentCamera.CoordinateFrame * CFrame.new(lastctrl.l+lastctrl.r,(lastctrl.f+lastctrl.b)*.2,0).p) - game.Workspace.CurrentCamera.CoordinateFrame.p))*speed 
+			else 
+				bv.velocity = Vector3.new(0,0.1,0) 
+			end 
+			bg.cframe = game.Workspace.CurrentCamera.CoordinateFrame * CFrame.Angles(-math.rad((ctrl.f+ctrl.b)*50*speed/maxspeed),0,0) 
+		until not flying 
+		ctrl = {f = 0, b = 0, l = 0, r = 0} 
+		lastctrl = {f = 0, b = 0, l = 0, r = 0} 
+		speed = 0 
+		bg:Destroy() 
+		bv:Destroy() 
+		plr.Character.Humanoid.PlatformStand = false 
+	end 
+	mouse.KeyDown:connect(function(key) 
+		if key:lower() == "f" then 
+			if flying then flying = false 
+			else 
+				flying = true 
+				Fly() 
+			end 
+		elseif key:lower() == "w" then 
+			ctrl.f = 1 
+		elseif key:lower() == "s" then 
+			ctrl.b = -1 
+		elseif key:lower() == "a" then 
+			ctrl.l = -1 
+		elseif key:lower() == "d" then 
+			ctrl.r = 1 
+		end 
+	end) 
+	mouse.KeyUp:connect(function(key) 
+		if key:lower() == "w" then 
+			ctrl.f = 0 
+		elseif key:lower() == "s" then 
+			ctrl.b = 0 
+		elseif key:lower() == "a" then 
+			ctrl.l = 0 
+		elseif key:lower() == "d" then 
+			ctrl.r = 0 
+		end 
+	end)
+	Fly()
+end)
+
+Frame_8.Parent = Main
+Frame_8.BackgroundColor3 = Color3.fromRGB(0, 85, 0)
+Frame_8.Position = UDim2.new(0.0780287459, 0, 0.821366012, 0)
+Frame_8.Size = UDim2.new(0, 12, 0, 12)
+Frame_8.Style = Enum.FrameStyle.ChatGreen
+
+ChatSpam.Name = "Chat Spam"
+ChatSpam.Parent = Main
+ChatSpam.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
+ChatSpam.BorderColor3 = Color3.fromRGB(25, 25, 25)
+ChatSpam.Position = UDim2.new(0.112936348, 0, 0.880910695, 0)
+ChatSpam.Size = UDim2.new(0, 85, 0, 16)
+ChatSpam.Font = Enum.Font.Gotham
+ChatSpam.Text = "Chat Spam"
+ChatSpam.TextColor3 = Color3.fromRGB(255, 255, 255)
+ChatSpam.TextSize = 14.000
+ChatSpam.MouseButton1Down:connect(function()
+	while true do wait(0) 
+
+		local A_1 = "JoeHub Is The Best" local A_2 = "All" 
+		local Event = game:GetService("ReplicatedStorage").DefaultChatSystemChatEvents.SayMessageRequest Event:FireServer(A_1, A_2) end
+end)
+
+Frame_9.Parent = Main
+Frame_9.BackgroundColor3 = Color3.fromRGB(0, 85, 0)
+Frame_9.Position = UDim2.new(0.0759753585, 0, 0.884413302, 0)
+Frame_9.Size = UDim2.new(0, 12, 0, 12)
+Frame_9.Style = Enum.FrameStyle.ChatGreen
+
+TextLabel_5.Parent = Main
+TextLabel_5.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+TextLabel_5.BorderColor3 = Color3.fromRGB(30, 30, 30)
+TextLabel_5.Position = UDim2.new(0.813141704, 0, 0.964973748, 0)
+TextLabel_5.Size = UDim2.new(0, 52, 0, 15)
+TextLabel_5.Font = Enum.Font.Gotham
+TextLabel_5.Text = "Made by wah#6162"
+TextLabel_5.TextColor3 = Color3.fromRGB(255, 255, 255)
+TextLabel_5.TextSize = 14.000
